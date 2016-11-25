@@ -61,7 +61,7 @@ void display(LNode* disL)
 
 int search(LNode* searchL,elemType searchDate)
 {
-	LNode* p;
+	LNode *p;
 	p = searchL;
 	int k = 0;
 	while(p->next != NULL && p->date != searchDate)
@@ -75,19 +75,74 @@ int search(LNode* searchL,elemType searchDate)
 		return k;
 }
 
-bool delete(LNode* deleteL,elemType deleteDate)
+bool deleteDate(LNode* deleteL,elemType deleteDate)
 {
+	LNode *p,*freeP;
+	p =  deleteL;
 	
+	while(p->next != NULL)
+	{
+		
+		if(p->next->date >= deleteDate)
+			break;
+		p = p->next;
+	}
+	if(p->next == NULL)
+	{
+		return false;
+	}
+	else
+	{
+		if(p->next->date == deleteDate)
+		{
+			freeP = p->next;
+			p->next = p->next->next;
+			free(freeP);
+			return true;
+		}
+		else
+		return false;
+		
+	}
 }
 
-int insert(LNode* insertL,elemType insertDate)
+void insert(LNode* insertL,elemType insertDate)//ÎÈ¶¨µÄ²åÈë 
 {
-	
+	LNode *p,*temp;
+	p = insertL;
+	while(p->next != NULL)
+	{
+		if(p->next->date > insertDate)
+			break;
+		p = p->next;
+	}
+	temp = (LNode*)malloc(sizeof(LNode));
+	temp->date = insertDate;
+	temp->next = p->next;
+	p->next = temp;
 }
 
 void sort(LNode* sortL)
 {
-	
+	LNode *p;
+	p = sortL;
+	elemType temp;
+	int size = length(p);
+	for(int i = 0;i < size;i++)
+	{
+		p = sortL;
+		for(int j = i;j < size - 1;j++)
+		{
+			p = p->next;
+			if(p->next->date < p->date)
+			{
+				temp = p->date;
+				p->date = p->next->date;
+				p->next->date = temp;
+			}
+		}
+		
+	}
 }
 
 
@@ -96,7 +151,12 @@ int main()
 {
 	LNode* head;
 	head = creat(10);
+	insert(head,10);
+	deleteDate(head,5);
+	
+	sort(head);
 	display(head);
-	cout<<search(head,5);
+	
+	cout<<search(head,10);
 	return 0;
 }
