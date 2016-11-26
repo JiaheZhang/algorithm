@@ -2,55 +2,60 @@
 #include<malloc.h>
 using namespace std;
 
-typedef int elemType;
-
-typedef struct L
+template<typename elemType>
+struct LNode
 {
 	elemType date;
-	struct L *next;
+	LNode *next;
 	
-}LNode;
+};
 
-LNode* creat(int number)
+template<typename elemType>
+class NodeLink
 {
-	LNode *head,*p,*temp;
-	head = (LNode*)malloc(sizeof(LNode));
-	//head->date = number;//save the length if elemType is "int"
+	public:
+		NodeLink();
+		NodeLink(NodeLink<elemType> &);
+		//void creat(int number);
+		int getLength(void) const;
+		void display(void) const;
+		int search(elemType searchDate) const;
+		bool deleteDate(elemType deleteDate);
+		void insert(elemType insertDate);//稳定的插入 
+		void sort(void) const;
+	
+	private:
+		LNode<elemType> *head;
+		int length;
+};
+
+template<typename elemType>
+NodeLink<elemType>::NodeLink()
+{
+	head = new LNode<elemType>;
 	head->next = NULL;
+	this->length = 0;
+}
+
+template<typename elemType>
+NodeLink<elemType>::NodeLink(NodeLink<elemType> &ref)
+{
 	
+}
+
+template<typename elemType>
+int NodeLink<elemType>::getLength(void) const
+{
+	return this->length;
+}
+
+
+template<typename elemType>
+void NodeLink<elemType>::display(void) const
+{
+	LNode<elemType> *p;
 	p = head;
-	
-	for(int i = 0;i < number;i++)
-	{
-		temp = (LNode*)malloc(sizeof(LNode));
-		scanf("%d",&(temp->date));//
-		p->next = temp;
-		p = temp;
-	}
-	p->next = NULL;
-	
-	return head;
-	
-}
-
-int length(LNode* lengthL)
-{
-	int size = 0;
-	LNode* p;
-	p = lengthL;
-	while(p->next != NULL)
-	{
-		size++;
-		p = p->next;
-	}
-	return size;
-}
-
-void display(LNode* disL)
-{
-	LNode* p;
-	p = disL;
-	cout<<"The length of node is "<<length(p)<<endl<<"The date is ";
+	cout<<"The length of node is "<<getLength()<<endl<<"The date is ";
 	while(p->next != NULL)
 	{
 		p = p->next;
@@ -59,10 +64,11 @@ void display(LNode* disL)
 	cout<<endl;
 }
 
-int search(LNode* searchL,elemType searchDate)
+template<typename elemType>
+int NodeLink<elemType>::search(elemType searchDate) const
 {
-	LNode *p;
-	p = searchL;
+	LNode<elemType> *p;
+	p = head;
 	int k = 0;
 	while(p->next != NULL && p->date != searchDate)
 	{
@@ -75,10 +81,11 @@ int search(LNode* searchL,elemType searchDate)
 		return k;
 }
 
-bool deleteDate(LNode* deleteL,elemType deleteDate)
+template<typename elemType>
+bool NodeLink<elemType>::deleteDate(elemType deleteDate)
 {
-	LNode *p,*freeP;
-	p =  deleteL;
+	LNode<elemType> *p,*freeP;
+	p =  head;
 	
 	while(p->next != NULL)
 	{
@@ -97,7 +104,8 @@ bool deleteDate(LNode* deleteL,elemType deleteDate)
 		{
 			freeP = p->next;
 			p->next = p->next->next;
-			free(freeP);
+			delete freeP;
+			this->length--;
 			return true;
 		}
 		else
@@ -106,31 +114,34 @@ bool deleteDate(LNode* deleteL,elemType deleteDate)
 	}
 }
 
-void insert(LNode* insertL,elemType insertDate)//稳定的插入 
+template<typename elemType>
+void NodeLink<elemType>::insert(elemType insertDate)//稳定的插入 
 {
-	LNode *p,*temp;
-	p = insertL;
+	LNode<elemType> *p,*temp;
+	p = head;
 	while(p->next != NULL)
 	{
 		if(p->next->date > insertDate)
 			break;
 		p = p->next;
 	}
-	temp = (LNode*)malloc(sizeof(LNode));
+	temp = new LNode<elemType>;
 	temp->date = insertDate;
 	temp->next = p->next;
 	p->next = temp;
+	this->length++;
 }
 
-void sort(LNode* sortL)
+template<typename elemType>
+void NodeLink<elemType>:: sort(void) const
 {
-	LNode *p;
-	p = sortL;
+	LNode<elemType> *p;
+	p = head;
 	elemType temp;
-	int size = length(p);
+	int size = getLength();
 	for(int i = 0;i < size;i++)
 	{
-		p = sortL;
+		p = head;
 		for(int j = i;j < size - 1;j++)
 		{
 			p = p->next;
@@ -146,17 +157,19 @@ void sort(LNode* sortL)
 }
 
 
-
 int main()
 {
-	LNode* head;
-	head = creat(10);
-	insert(head,10);
-	deleteDate(head,5);
+	NodeLink<int> head;
 	
-	sort(head);
-	display(head);
+	for(int i = 0;i < 20;i++)
+	{
+		head.insert(20 - i);
+	}
+	head.deleteDate(6);
 	
-	cout<<search(head,10);
+	head.sort();
+	head.display();
+	
+	cout<<head.search(10);
 	return 0;
 }
