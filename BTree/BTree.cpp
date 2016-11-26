@@ -2,13 +2,35 @@
 #include<malloc.h>
 using namespace std;
 
-typedef int elemType;
-
-typedef struct tree
+/**************/
+template<typename T>
+struct Node
 {
-	elemType date;
-	tree *leftChild,*rightChild;
-} BTree;
+	T date;
+	Node *leftChild,*rightChild;
+};
+/*******************/
+
+template<typename T>
+class BinTree
+{
+	public:
+		BinTree();
+		BinTree(BinTree&);
+		~BinTree();
+		void creat();
+		int getDeep(void)const;
+		void clear(void);
+		
+		
+		
+	private:
+		Node<T> root;
+		
+	
+};
+
+
 
 int main()
 {
