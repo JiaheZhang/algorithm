@@ -25,12 +25,35 @@ class BinTree
 		
 		
 	private:
-		Node<T> root;
+		Node<T> *root;
+		void _copy(BinTree &r);
 		
 	
 };
 
+template<typename T>
+BinTree<T>::BinTree()
+{
+	this->root = NULL;
+}
+template<typename T>
+BinTree<T>::BinTree(BinTree &r)
+{
+	_copy(r);
+}
 
+template<typename T>
+BinTree<T>::~BinTree()
+{
+	clear();
+	delete root;
+}
+
+template<typename T>
+void BinTree<T>::creat()
+{
+	
+}
 
 int main()
 {
